@@ -1,4 +1,5 @@
 import { Item, User } from "./types/qiita-types";
+import { QiitaKpi } from "./types/types";
 
 function myFunction() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -10,11 +11,6 @@ function myFunction() {
   sheet.getRange(lastRow + 1, 1).setValue(qiitaKpi.lgtmCount);
   sheet.getRange(lastRow + 1, 2).setValue(qiitaKpi.followersCount);
 }
-
-type QiitaKpi = {
-  lgtmCount: number;
-  followersCount: number;
-};
 
 class QiitaClient {
   private readonly QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
@@ -32,7 +28,7 @@ class QiitaClient {
     method: "get" as const,
   };
 
-  fetchKpi() {
+  fetchKpi(): QiitaKpi {
     // ユーザー情報の取得
     const usersRes = UrlFetchApp.fetch(
       `${this.QIITA_BASE_URL}/users/${this.QIITA_USER_NAME}`,
