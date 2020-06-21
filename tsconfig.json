@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": [
+      "@types/node",
+      "@types/google-apps-script"
+    ],
+    "forceConsistentCasingInFileNames": true,
+  }
+}
