@@ -9,11 +9,18 @@ const QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
 const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
   "qiitaUserName"
 ) as string;
+const TWITTER_API_KEY = PropertiesService.getScriptProperties().getProperty(
+  "twitterApiKey"
+) as string;
+const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
+  "twitterId"
+) as string;
 
 function myFunction() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getActiveSheet();
-  const lastRow = sheet.getLastRow();
+  const insertLow = sheet.getLastRow() + 1;
+  const today = Utilities.formatDate(new Date(), "JST", "yyyy/MM/dd");
 
   const qiitaKpi = new QiitaClient(
     QIITA_ACCESS_TOKEN,
@@ -22,9 +29,13 @@ function myFunction() {
 
   const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
 
-  sheet.getRange(lastRow + 1, 1).setValue(qiitaKpi.lgtmCount);
-  sheet.getRange(lastRow + 1, 2).setValue(qiitaKpi.followersCount);
-  sheet.getRange(lastRow + 1, 3).setValue(hatenaKpi.bookmarkCount);
+  const twitterKpi = new TwitterClient(TWITTER_API_KEY, TWITTER_ID).fetchKpi();
+
+  sheet.getRange(insertLow, 1).setValue(today);
+  sheet.getRange(insertLow, 2).setValue(qiitaKpi.lgtmCount);
+  sheet.getRange(insertLow, 3).setValue(qiitaKpi.followersCount);
+  sheet.getRange(insertLow, 4).setValue(hatenaKpi.bookmarkCount);
+  sheet.getRange(insertLow, 5).setValue(twitterKpi.followersCount);
 }
 
 class QiitaClient {
@@ -89,7 +100,7 @@ class HatenaClient {
     const redirectUrl = this.getRedirectUrl(
       `${this.BASE_URL}/bc/${this.blogUrl}`
     );
-
+    // `https://b.st-hatena.com/images/counter/default/00/00/0000653.gif` の形式でブクマ数が書かれたgif画像のURLからブクマ数を取得する
     const countFilenname = redirectUrl.match(
       /https:\/\/b.st-hatena\.com\/images\/counter\/default\/\d+\/\d+\/(\d+).gif/
     )![1];
@@ -111,5 +122,24 @@ class HatenaClient {
     } else {
       return url;
     }
+  }
+}
+
+class TwitterClient {
+  private readonly BASE_URL = "https://api.twittercounter.com";
+
+  constructor(private apikey: string, private twitterId: string) {}
+
+  fetchKpi() {
+    const userRes = UrlFetchApp.fetch(
+      `${this.BASE_URL}?apikey=${this.apikey}&twitter_id=${this.twitterId}`
+    );
+    const user = JSON.parse(userRes.getContentText()) as {
+      followers_current: number;
+    };
+
+    return {
+      followersCount: user.followers_current,
+    };
   }
 }
