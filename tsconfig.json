@@ -9,7 +9,6 @@
     "types": [
       "@types/node",
       "@types/google-apps-script",
-      "./src/types/qiita-types.d.ts"
     ],
     "forceConsistentCasingInFileNames": true,
   }
