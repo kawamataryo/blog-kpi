@@ -8,7 +8,8 @@
     "skipLibCheck": true,
     "types": [
       "@types/node",
-      "@types/google-apps-script"
+      "@types/google-apps-script",
+      "./src/types/qiita-types.d.ts"
     ],
     "forceConsistentCasingInFileNames": true,
   }
