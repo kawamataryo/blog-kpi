@@ -1,6 +1,7 @@
 export type QiitaKpi = {
   postCount: number;
   lgtmCount: number;
+  stockCount: number;
   followersCount: number;
 };
 

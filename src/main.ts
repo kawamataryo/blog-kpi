@@ -32,6 +32,7 @@ function logBlogKpi() {
     today,
     qiitaKpi.postCount,
     qiitaKpi.lgtmCount,
+    qiitaKpi.stockCount,
     qiitaKpi.followersCount,
     hatenaKpi.bookmarkCount,
     twitterKpi.followersCount,
@@ -53,8 +54,28 @@ class QiitaClient {
   constructor(private accessToken: string, private userName: string) {}
 
   fetchKpi(): QiitaKpi {
-    // ユーザー情報の取得
     const user = this.fetchUser();
+    const items = this.fetchAllItems(user);
+    const lgtmCount = this.tallyUpLgtmCount(items);
+    const stockCount = this.tallyUpStockCount(items);
+
+    return {
+      lgtmCount,
+      stockCount,
+      followersCount: user.followers_count,
+      postCount: user.items_count,
+    };
+  }
+
+  private fetchUser() {
+    const response = UrlFetchApp.fetch(
+      `${this.BASE_URL}/users/${this.userName}`,
+      this.FETCH_OPTION
+    );
+    return JSON.parse(response.getContentText()) as User;
+  }
+
+  private fetchAllItems(user: User) {
     // 最大ページ数
     const maxPage = Math.ceil(user.items_count / this.PER_PAGE);
     // 投稿一覧の取得
@@ -64,32 +85,39 @@ class QiitaClient {
       const items = this.fetchItems(page, this.PER_PAGE);
       allItems = [...allItems, ...items];
     });
-    // LGTMの集計
-    const lgtmCount = allItems.reduce(
-      (result, item) => result + item.likes_count,
-      0
-    );
-    return {
-      lgtmCount,
-      followersCount: user.followers_count,
-      postCount: user.items_count,
-    };
-  }
-
-  private fetchUser() {
-    const usersRes = UrlFetchApp.fetch(
-      `${this.BASE_URL}/users/${this.userName}`,
-      this.FETCH_OPTION
-    );
-    return JSON.parse(usersRes.getContentText()) as User;
+    return allItems;
   }
 
   private fetchItems(page: number, perPage: number) {
-    const itemsRes = UrlFetchApp.fetch(
+    const response = UrlFetchApp.fetch(
       `${this.BASE_URL}/authenticated_user/items?page=${page}&per_page=${perPage}`,
       this.FETCH_OPTION
     );
-    return JSON.parse(itemsRes.getContentText()) as Item[];
+    return JSON.parse(response.getContentText()) as Item[];
+  }
+
+  private fetchStockers(itemId: string) {
+    const response = UrlFetchApp.fetch(
+      `${this.BASE_URL}/items/${itemId}/stockers`,
+      this.FETCH_OPTION
+    );
+    return JSON.parse(response.getContentText()) as User[];
+  }
+
+  private tallyUpLgtmCount(items: Item[]) {
+    const lgtmCount = items.reduce(
+      (result, item) => result + item.likes_count,
+      0
+    );
+    return lgtmCount;
+  }
+
+  private tallyUpStockCount(items: Item[]) {
+    const stockCount = items.reduce((result, item) => {
+      const stockedUser = this.fetchStockers(item.id);
+      return result + stockedUser.length;
+    }, 0);
+    return stockCount;
   }
 }
 
