@@ -1,5 +1,6 @@
 import { Item, User } from "./types/qiita-types";
-import { QiitaKpi, HatenaKpi } from "./types/types";
+import { QiitaKpi, HatenaKpi, TwitterKpi } from "./types/types";
+
 const BLOG_URL = PropertiesService.getScriptProperties().getProperty(
   "blogUrl"
 ) as string;
@@ -13,6 +14,9 @@ const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
   "twitterId"
 ) as string;
 
+// -------------------------------------------------------------
+// Blog KPIの記録
+// -------------------------------------------------------------
 function logBlogKpi() {
   const today = Utilities.formatDate(new Date(), "JST", "yyyy/MM/dd");
   const qiitaKpi = new QiitaClient(
@@ -26,6 +30,7 @@ function logBlogKpi() {
   const insertLow = sheet.getLastRow() + 1;
   [
     today,
+    qiitaKpi.postCount,
     qiitaKpi.lgtmCount,
     qiitaKpi.followersCount,
     hatenaKpi.bookmarkCount,
@@ -67,6 +72,7 @@ class QiitaClient {
     return {
       lgtmCount,
       followersCount: user.followers_count,
+      postCount: user.items_count,
     };
   }
 
@@ -130,7 +136,7 @@ class TwitterClient {
     this.twitterService = getTwitterService();
   }
 
-  fetchKpi() {
+  fetchKpi(): TwitterKpi {
     const user = this.fetchUser(this.twitterId);
     return {
       followersCount: user.followers_count,
@@ -153,7 +159,7 @@ class TwitterClient {
 }
 
 // -------------------------------------------------------------
-// twitter APIのOauth
+// Twitter APIのOauth設定
 // 参考 https://qiita.com/k7a/items/e6a456bec26b4e667c47
 // -------------------------------------------------------------
 
