@@ -13,26 +13,26 @@ const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
   "twitterId"
 ) as string;
 
-function myFunction() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getActiveSheet();
-  const insertLow = sheet.getLastRow() + 1;
+function logBlogKpi() {
   const today = Utilities.formatDate(new Date(), "JST", "yyyy/MM/dd");
-
   const qiitaKpi = new QiitaClient(
     QIITA_ACCESS_TOKEN,
     QIITA_USER_NAME
   ).fetchKpi();
-
   const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
-
   const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
 
-  sheet.getRange(insertLow, 1).setValue(today);
-  sheet.getRange(insertLow, 2).setValue(qiitaKpi.lgtmCount);
-  sheet.getRange(insertLow, 3).setValue(qiitaKpi.followersCount);
-  sheet.getRange(insertLow, 4).setValue(hatenaKpi.bookmarkCount);
-  sheet.getRange(insertLow, 5).setValue(twitterKpi.followersCount);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const insertLow = sheet.getLastRow() + 1;
+  [
+    today,
+    qiitaKpi.lgtmCount,
+    qiitaKpi.followersCount,
+    hatenaKpi.bookmarkCount,
+    twitterKpi.followersCount,
+  ].forEach((data, i) => {
+    sheet.getRange(insertLow, i + 1).setValue(data);
+  });
 }
 
 class QiitaClient {
