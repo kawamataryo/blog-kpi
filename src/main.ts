@@ -9,9 +9,6 @@ const QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
 const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
   "qiitaUserName"
 ) as string;
-const TWITTER_API_KEY = PropertiesService.getScriptProperties().getProperty(
-  "twitterApiKey"
-) as string;
 const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
   "twitterId"
 ) as string;
@@ -29,7 +26,7 @@ function myFunction() {
 
   const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
 
-  const twitterKpi = new TwitterClient(TWITTER_API_KEY, TWITTER_ID).fetchKpi();
+  const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
 
   sheet.getRange(insertLow, 1).setValue(today);
   sheet.getRange(insertLow, 2).setValue(qiitaKpi.lgtmCount);
@@ -126,20 +123,78 @@ class HatenaClient {
 }
 
 class TwitterClient {
-  private readonly BASE_URL = "https://api.twittercounter.com";
+  private readonly BASE_URL = "https://api.twitter.com/1.1";
+  private twitterService: any;
 
-  constructor(private apikey: string, private twitterId: string) {}
+  constructor(private twitterId: string) {
+    this.twitterService = getTwitterService();
+  }
 
   fetchKpi() {
-    const userRes = UrlFetchApp.fetch(
-      `${this.BASE_URL}?apikey=${this.apikey}&twitter_id=${this.twitterId}`
-    );
-    const user = JSON.parse(userRes.getContentText()) as {
-      followers_current: number;
-    };
-
+    const user = this.fetchUser(this.twitterId);
     return {
-      followersCount: user.followers_current,
+      followersCount: user.followers_count,
     };
+  }
+
+  fetchUser(twitterId: string) {
+    const userRes = this.twitterService.fetch(
+      `${this.BASE_URL}/users/show.json?user_id=${twitterId}`,
+      {
+        method: "get",
+        muteHttpExceptions: true,
+      }
+    );
+
+    return JSON.parse(userRes.getContentText()) as {
+      followers_count: number;
+    };
+  }
+}
+
+// -------------------------------------------------------------
+// twitter APIのOauth
+// 参考 https://qiita.com/k7a/items/e6a456bec26b4e667c47
+// -------------------------------------------------------------
+
+// Twitter AppのConsumer Api Key
+const CONSUMER_KEY = PropertiesService.getScriptProperties().getProperty(
+  "twitterConsumerKey"
+) as string;
+const CONSUMER_SECRET = PropertiesService.getScriptProperties().getProperty(
+  "twitterConsumerSecret"
+) as string;
+
+// 認証URLを取得しログに出力する
+function logAuthorizeUri() {
+  const twitterService = getTwitterService();
+  Logger.log(twitterService.authorize());
+}
+
+// OAuth認証をよしなにしてくれるサービスクラスのインスタンスを生成・取得する
+function getTwitterService() {
+  return (
+    OAuth1.createService("Twitter")
+      .setAccessTokenUrl("https://api.twitter.com/oauth/access_token")
+      .setRequestTokenUrl("https://api.twitter.com/oauth/request_token")
+      .setAuthorizationUrl("https://api.twitter.com/oauth/authenticate")
+      .setConsumerKey(CONSUMER_KEY)
+      .setConsumerSecret(CONSUMER_SECRET)
+      // リダイレクト時に実行されるコールバック関数を指定する
+      .setCallbackFunction("authCallback")
+      // アクセストークンを保存するPropertyStoreを指定する
+      .setPropertyStore(PropertiesService.getUserProperties())
+  );
+}
+
+// リダイレクト時に実行されるコールバック関数
+function authCallback(request) {
+  const twitterService = getTwitterService();
+  // ここで認証成功時にアクセストークンがPropertyStoreに保存される
+  const isAuthorized = twitterService.handleCallback(request);
+  if (isAuthorized) {
+    return HtmlService.createHtmlOutput("Success");
+  } else {
+    return HtmlService.createHtmlOutput("Denied");
   }
 }
