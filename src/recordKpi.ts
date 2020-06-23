@@ -15,7 +15,7 @@ const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 
 // -------------------------------------------------------------
-// Blog KPIの記録
+// Blog KPIのスプレッドシートへの記録
 // -------------------------------------------------------------
 function recordKpi() {
   const today = Utilities.formatDate(new Date(), "JST", "yyyy/MM/dd");
@@ -41,6 +41,9 @@ function recordKpi() {
   });
 }
 
+// -------------------------------------------------------------
+// Qiita API Client
+// -------------------------------------------------------------
 class QiitaClient {
   private readonly BASE_URL = "https://qiita.com/api/v2";
   private readonly PER_PAGE = 100;
@@ -121,6 +124,9 @@ class QiitaClient {
   }
 }
 
+// -------------------------------------------------------------
+// Hatena API Client
+// -------------------------------------------------------------
 class HatenaClient {
   private readonly BASE_URL = "http://b.hatena.ne.jp";
 
@@ -162,6 +168,9 @@ class HatenaClient {
   }
 }
 
+// -------------------------------------------------------------
+// Twitter API Client
+// -------------------------------------------------------------
 class TwitterClient {
   private readonly BASE_URL = "https://api.twitter.com/1.1";
   private twitterService: any;
