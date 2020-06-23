@@ -17,6 +17,7 @@ export type Kpis = {
   date: string;
   qiitaPostCount: string;
   qiitaLgtmCount: string;
+  qiitaStockCount: string;
   qiitaFollowerCount: string;
   hatenaBookmarkCount: string;
   twitterFollowerCount: string;

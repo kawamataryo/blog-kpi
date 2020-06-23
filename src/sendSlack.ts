@@ -8,6 +8,7 @@ const KPI_KEYS = [
   "date",
   "qiitaPostCount",
   "qiitaLgtmCount",
+  "qiitaStockCount",
   "qiitaFollowerCount",
   "hatenaBookmarkCount",
   "twitterFollowerCount",
@@ -19,7 +20,7 @@ function postMessage() {
     result[key] = sheet.getRange(sheet.getLastRow(), i + 1).getValue();
     return result;
   }, {});
-  console.log(kpis)
+
   const options = {
     method: "post" as const,
     headers: { "Content-type": "application/json" },
@@ -36,12 +37,17 @@ function createBlock(kpis: Kpis) {
         text: {
           type: "mrkdwn",
           text: `
-          *Blog KPI(${kpis.date})*
-          Qiita記事数: *${kpis.qiitaPostCount}*
-          QiitaLGTM数: *${kpis.qiitaLgtmCount}*
-          Qiitaフォロワー数: *${kpis.qiitaFollowerCount}*
-          はてなブックマーク数: *${kpis.hatenaBookmarkCount}*
-          Twitterフォロワー数: *${kpis.twitterFollowerCount}*
+*📚Blog KPI ${Utilities.formatDate(
+            new Date(kpis.date),
+            "Asia/Tokyo",
+            "yyyy年M月d日"
+          )})*
+Qiita記事数: *${kpis.qiitaPostCount}*
+QiitaLGTM数: *${kpis.qiitaLgtmCount}*
+Qiitaストック数: *${kpis.qiitaStockCount}*
+Qiitaフォロワー数: *${kpis.qiitaFollowerCount}*
+はてなブックマーク数: *${kpis.hatenaBookmarkCount}*
+Twitterフォロワー数: *${kpis.twitterFollowerCount}*
           `,
         },
       },
