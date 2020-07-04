@@ -13,6 +13,9 @@ const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
 const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
   "twitterId"
 ) as string;
+const GA_ID = PropertiesService.getScriptProperties().getProperty(
+  "gaId"
+) as string;
 
 // -------------------------------------------------------------
 // Blog KPIのスプレッドシートへの記録
@@ -24,6 +27,7 @@ function recordKpi() {
     QIITA_USER_NAME
   ).fetchKpi();
   const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
+  const gaKpi = new GoogleAnalyticsClient(GA_ID).fetchKpi();
   const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -36,6 +40,9 @@ function recordKpi() {
     qiitaKpi.followersCount,
     hatenaKpi.bookmarkCount,
     twitterKpi.followersCount,
+    gaKpi.dailyPageView,
+    gaKpi.dailyUsers,
+    gaKpi.weeklyPageView,
   ].forEach((data, i) => {
     sheet.getRange(insertLow, i + 1).setValue(data);
   });
@@ -165,6 +172,61 @@ class HatenaClient {
     } else {
       return url;
     }
+  }
+}
+
+// -------------------------------------------------------------
+// Google Analytics Client
+// -------------------------------------------------------------
+
+class GoogleAnalyticsClient {
+  constructor(private gaId: string) {}
+
+  fetchKpi() {
+    const {
+      sessions: dailyPageView,
+      users: dailyUsers,
+    } = this.fetchDailyMetrics();
+    const {
+      sessions: weeklyPageView,
+      users: weeklyUsers,
+    } = this.fetchWeeklyMetrics();
+
+    return {
+      dailyPageView,
+      dailyUsers,
+      weeklyPageView,
+      weeklyUsers,
+    };
+  }
+
+  fetchDailyMetrics() {
+    const dataRows = Analytics!.Data!.Ga!.get(
+      this.gaId,
+      "today",
+      "today",
+      "ga:sessions, ga:users"
+    ).rows;
+    console.log(dataRows);
+
+    return {
+      sessions: Number(dataRows![0][0]),
+      users: Number(dataRows![0][1]),
+    };
+  }
+
+  fetchWeeklyMetrics() {
+    const dataRows = Analytics!.Data!.Ga!.get(
+      this.gaId,
+      "7daysAgo",
+      "today",
+      "ga:sessions"
+    ).rows;
+    console.log(dataRows);
+
+    return {
+      sessions: Number(dataRows![0][0]),
+    };
   }
 }
 
