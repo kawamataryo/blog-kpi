@@ -17,6 +17,15 @@ const GA_ID = PropertiesService.getScriptProperties().getProperty(
   "gaId"
 ) as string;
 
+// 目標値
+const TARGET_VALUES = {
+  qiitaLgtmCount: 5500,
+  qiitaFollowersCount: 220,
+  twitterFollowersCount: 5500,
+  hatenaBookmarkCount: 5500,
+  dailyPageView: 5500,
+};
+
 // -------------------------------------------------------------
 // Blog KPIのスプレッドシートへの記録
 // -------------------------------------------------------------
@@ -43,6 +52,12 @@ function recordKpi() {
     gaKpi.dailyPageView,
     gaKpi.dailyUsers,
     gaKpi.weeklyPageView,
+    gaKpi.weeklyUsers,
+    TARGET_VALUES.qiitaLgtmCount,
+    TARGET_VALUES.qiitaFollowersCount,
+    TARGET_VALUES.twitterFollowersCount,
+    TARGET_VALUES.hatenaBookmarkCount,
+    TARGET_VALUES.dailyPageView,
   ].forEach((data, i) => {
     sheet.getRange(insertLow, i + 1).setValue(data);
   });

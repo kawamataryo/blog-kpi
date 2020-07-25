@@ -7,3 +7,9 @@ Record the following count with GAS.
 - Qiita follower
 - Hatena bookmark
 - Twitter follower
+
+# Usage
+
+deploy to GAS
+
+```
