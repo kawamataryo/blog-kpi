@@ -21,9 +21,9 @@ const GA_ID = PropertiesService.getScriptProperties().getProperty(
 const TARGET_VALUES = {
   qiitaLgtmCount: 5500,
   qiitaFollowersCount: 220,
-  twitterFollowersCount: 5500,
-  hatenaBookmarkCount: 5500,
-  dailyPageView: 5500,
+  twitterFollowersCount: 1000,
+  hatenaBookmarkCount: 800,
+  dailyPageView: 1450,
 };
 
 // -------------------------------------------------------------
