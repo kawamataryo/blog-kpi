@@ -12,4 +12,6 @@ Record the following count with GAS.
 
 deploy to GAS
 
+```bash
+$ clasp push
 ```
