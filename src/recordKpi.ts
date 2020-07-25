@@ -235,12 +235,13 @@ class GoogleAnalyticsClient {
       this.gaId,
       "7daysAgo",
       "today",
-      "ga:sessions"
+      "ga:sessions, ga:users"
     ).rows;
     console.log(dataRows);
 
     return {
       sessions: Number(dataRows![0][0]),
+      users: Number(dataRows![0][1]),
     };
   }
 }
