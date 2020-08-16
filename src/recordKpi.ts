@@ -22,7 +22,7 @@ const TARGET_VALUES = {
   qiitaLgtmCount: 6400,
   qiitaFollowersCount: 250,
   twitterFollowersCount: 1000,
-  hatenaBookmarkCount: 800,
+  hatenaBookmarkCount: 900,
   dailyPageView: 1450,
 };
 
