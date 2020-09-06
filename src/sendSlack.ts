@@ -33,23 +33,42 @@ function createBlock(kpis: Kpis) {
   return {
     blocks: [
       {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: "*RyoKawamataの今週のKPI*",
+          },
+        ],
+      },
+      {
+        type: "divider",
+      },
+      {
         type: "section",
         text: {
           type: "mrkdwn",
           text: `
-*📚Blog KPI ${Utilities.formatDate(
+          ${Utilities.formatDate(
             new Date(kpis.date),
             "Asia/Tokyo",
             "yyyy年M月d日"
           )})*
 Qiita記事数: *${kpis.qiitaPostCount}*
 QiitaLGTM数: *${kpis.qiitaLgtmCount}*
-Qiitaストック数: *${kpis.qiitaStockCount}*
 Qiitaフォロワー数: *${kpis.qiitaFollowerCount}*
 はてなブックマーク数: *${kpis.hatenaBookmarkCount}*
 Twitterフォロワー数: *${kpis.twitterFollowerCount}*
           `,
         },
+        accessory: {
+          type: "image",
+          image_url: "https://image.flaticon.com/icons/png/512/138/138351.png",
+          alt_text: "user thumbnail",
+        },
+      },
+      {
+        type: "divider",
       },
     ],
   };
