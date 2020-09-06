@@ -33,34 +33,43 @@ function createBlock(kpis: Kpis) {
   return {
     blocks: [
       {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: "*RyoKawamataの今週のKPI*",
-          },
-        ],
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `\n📝 KawamataRyoの今週のKPI (${Utilities.formatDate(
+            new Date(kpis.date),
+            "Asia/Tokyo",
+            "yyyy/M/d"
+          )})`,
+        },
       },
       {
         type: "divider",
       },
       {
         type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `
-          ${Utilities.formatDate(
-            new Date(kpis.date),
-            "Asia/Tokyo",
-            "yyyy年M月d日"
-          )})*
-Qiita記事数: *${kpis.qiitaPostCount}*
-QiitaLGTM数: *${kpis.qiitaLgtmCount}*
-Qiitaフォロワー数: *${kpis.qiitaFollowerCount}*
-はてなブックマーク数: *${kpis.hatenaBookmarkCount}*
-Twitterフォロワー数: *${kpis.twitterFollowerCount}*
-          `,
-        },
+        fields: [
+          {
+            type: "mrkdwn",
+            text: `*Qiita記事数:*\n${kpis.qiitaPostCount}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*QiitaLGTM数:*\n${kpis.qiitaLgtmCount}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*Qiitaフォロワー数:*\n${kpis.qiitaFollowerCount}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*はてなブックマーク数:*\n${kpis.hatenaBookmarkCount}`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*Twitterフォロワー数:*\n${kpis.twitterFollowerCount}`,
+          },
+        ],
         accessory: {
           type: "image",
           image_url: "https://image.flaticon.com/icons/png/512/138/138351.png",
@@ -69,6 +78,14 @@ Twitterフォロワー数: *${kpis.twitterFollowerCount}*
       },
       {
         type: "divider",
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text:
+            "その他チャート: https://www.notion.so/ryokawamata/My-KPI-72f35e0601f642ddadd556bb91d85a32",
+        },
       },
     ],
   };
