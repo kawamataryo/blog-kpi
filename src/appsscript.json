@@ -10,6 +10,10 @@
       "userSymbol": "OAuth1",
       "libraryId": "1CXDCY5sqT9ph64fFwSzVtXnbjpSfWdRymafDrtIZ7Z_hwysTY7IIhi7s",
       "version": "18"
+    }, {
+      "userSymbol": "Moment",
+      "libraryId": "15hgNOjKHUG4UtyZl9clqBbl23sDvWMS8pfDJOyIapZk5RBqwL3i-rlCo",
+      "version": "9"
     }]
   },
   "exceptionLogging": "STACKDRIVER",

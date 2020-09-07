@@ -13,12 +13,12 @@ export type TwitterKpi = {
   followersCount: number;
 };
 
-export type Kpis = {
+export type Kpi = {
   date: string;
-  qiitaPostCount: string;
-  qiitaLgtmCount: string;
-  qiitaStockCount: string;
-  qiitaFollowerCount: string;
-  hatenaBookmarkCount: string;
-  twitterFollowerCount: string;
+  qiitaPostCount: number;
+  qiitaLgtmCount: number;
+  qiitaStockCount: number;
+  qiitaFollowerCount: number;
+  hatenaBookmarkCount: number;
+  twitterFollowerCount: number;
 };
