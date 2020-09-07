@@ -38,9 +38,9 @@ function postMessage() {
 function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
   const recentPostsText = recentPosts
     .map((item) => {
-      return `タイトル: ${item.title}\n${item.url}`;
+      return `${item.title} (*${item.likes_count}* LGTM)\n${item.url}`;
     })
-    .join("\n");
+    .join("\n\n");
 
   return {
     blocks: [
@@ -103,7 +103,7 @@ function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
         text: {
           type: "mrkdwn",
           text:
-            "その他チャート: https://www.notion.so/ryokawamata/My-KPI-72f35e0601f642ddadd556bb91d85a32",
+            "<https://www.notion.so/ryokawamata/My-KPI-72f35e0601f642ddadd556bb91d85a32|その他指標・チャート（Notion）>",
         },
       },
       {
