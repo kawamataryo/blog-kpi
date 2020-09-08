@@ -1,15 +1,15 @@
 import { Kpi } from "./types/types";
 import { Item } from "./types/qiita-types";
+import { QiitaClient } from "./lib/qiitaClient";
 const WEBHOOK_URL = PropertiesService.getScriptProperties().getProperty(
   "webhookUrl"
 ) as string;
 const QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
   "qiitaAccessToken"
 ) as string;
-
-declare const Moment: {
-  moment(arg?: any): any;
-};
+const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "qiitaUserName"
+) as string;
 
 const KPI_KEYS = [
   "date",
@@ -25,7 +25,10 @@ function postMessage() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const kpi = getKpi(sheet.getLastRow(), sheet);
   const previousWeekKpi = getKpi(sheet.getLastRow() - 7, sheet);
-  const recentPosts = new QiitaClient(QIITA_ACCESS_TOKEN).fetchWeeklyPosts();
+  const recentPosts = new QiitaClient(
+    QIITA_ACCESS_TOKEN,
+    QIITA_USER_NAME
+  ).fetchWeeklyPosts();
 
   const options = {
     method: "post" as const,
@@ -146,34 +149,4 @@ function getKpi(
     }
     return result;
   }, {}) as Kpi;
-}
-
-class QiitaClient {
-  private readonly BASE_URL = "https://qiita.com/api/v2";
-  private readonly PER_PAGE = 20;
-  private readonly FETCH_OPTION = {
-    headers: {
-      Authorization: `Bearer ${this.accessToken}`,
-    },
-    method: "get" as const,
-  };
-
-  constructor(private accessToken: string) {}
-
-  fetchWeeklyPosts(): Item[] {
-    const items = this.fetchItems(1, this.PER_PAGE);
-    return items.filter((item) => {
-      return Moment.moment(item.created_at).isAfter(
-        Moment.moment().add(-7, "days")
-      );
-    });
-  }
-
-  private fetchItems(page: number, perPage: number) {
-    const response = UrlFetchApp.fetch(
-      `${this.BASE_URL}/authenticated_user/items?page=${page}&per_page=${perPage}`,
-      this.FETCH_OPTION
-    );
-    return JSON.parse(response.getContentText()) as Item[];
-  }
 }
