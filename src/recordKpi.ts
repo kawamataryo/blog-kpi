@@ -2,7 +2,7 @@ import { QiitaClient } from "./lib/qiitaClient";
 import { HatenaClient } from "./lib/hatenaClient";
 import { GoogleAnalyticsClient } from "./lib/googleAnalyticsClient";
 import { TwitterClient } from "./lib/twitterClient";
-import {ZennClient} from "./lib/ZennClient";
+import { ZennClient } from "./lib/ZennClient";
 
 const BLOG_URL = PropertiesService.getScriptProperties().getProperty(
   "blogUrl"
