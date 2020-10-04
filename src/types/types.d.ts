@@ -13,6 +13,11 @@ export type TwitterKpi = {
   followersCount: number;
 };
 
+export type ZennKpi = {
+  zennLikeCount: number;
+  zennPostCount: number;
+}
+
 export type Kpi = {
   date: string;
   qiitaPostCount: number;
@@ -21,4 +26,10 @@ export type Kpi = {
   qiitaFollowerCount: number;
   hatenaBookmarkCount: number;
   twitterFollowerCount: number;
+  dailyPageView: number;
+  dailyUsers: number;
+  weeklyPageView: number;
+  weeklyUsers: number;
+  zennPostCount: number;
+  zennLikeCount: number;
 };

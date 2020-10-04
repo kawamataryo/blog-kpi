@@ -1,6 +1,8 @@
 import { Kpi } from "./types/types";
 import { Item } from "./types/qiita-types";
 import { QiitaClient } from "./lib/qiitaClient";
+import { ZennClient } from "./lib/ZennClient";
+import { ZennArticle } from "./types/zenn-types";
 const WEBHOOK_URL = PropertiesService.getScriptProperties().getProperty(
   "webhookUrl"
 ) as string;
@@ -9,6 +11,9 @@ const QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
   "qiitaUserName"
+) as string;
+const ZENN_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "zennUserName"
 ) as string;
 
 const KPI_KEYS = [
@@ -19,29 +24,53 @@ const KPI_KEYS = [
   "qiitaFollowerCount",
   "hatenaBookmarkCount",
   "twitterFollowerCount",
+  "dailyPageView",
+  "dailyUsers",
+  "weeklyPageView",
+  "weeklyUsers",
+  "targetValueQiitaLgtmCount",
+  "targetValueQiitaFollowersCount",
+  "targetValueTwitterFollowersCount",
+  "targetValueHatenaBookmarkCount",
+  "targetValueDailyPageView",
+  "zennPostCount",
+  "zennLikeCount",
 ];
 
 function postMessage() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const kpi = getKpi(sheet.getLastRow(), sheet);
   const previousWeekKpi = getKpi(sheet.getLastRow() - 7, sheet);
-  const recentPosts = new QiitaClient(
+  const recentQiitaPosts = new QiitaClient(
     QIITA_ACCESS_TOKEN,
     QIITA_USER_NAME
   ).fetchWeeklyPosts();
+  const recentZennArticles = new ZennClient(ZENN_USER_NAME).fetchWeeklyPosts();
 
   const options = {
     method: "post" as const,
     headers: { "Content-type": "application/json" },
-    payload: JSON.stringify(createBlock(kpi, previousWeekKpi, recentPosts)),
+    payload: JSON.stringify(
+      createBlock(kpi, previousWeekKpi, recentQiitaPosts, recentZennArticles)
+    ),
   };
   UrlFetchApp.fetch(WEBHOOK_URL, options);
 }
 
-function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
-  const recentPostsText = recentPosts
+function createBlock(
+  kpi: Kpi,
+  previousWeekKpi: Kpi,
+  recentQiitaPosts: Item[],
+  recentZennArticles: ZennArticle[]
+) {
+  const recentQiitaPostsText = recentQiitaPosts
     .map((item) => {
       return `${item.title} (*${item.likes_count}* LGTM)\n${item.url}`;
+    })
+    .join("\n\n");
+  const recentZennArticlesText = recentZennArticles
+    .map((article) => {
+      return `${article.title} (*${article.liked_count}* LIKE)\nhttps://zenn.dev/${ZENN_USER_NAME}/${article.slug}`;
     })
     .join("\n\n");
 
@@ -72,7 +101,7 @@ function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
           },
           {
             type: "mrkdwn",
-            text: `*QiitaLGTM数:*\n${kpi.qiitaLgtmCount}（+${
+            text: `*Qiita LGTM数:*\n${kpi.qiitaLgtmCount}（+${
               kpi.qiitaLgtmCount - previousWeekKpi.qiitaLgtmCount
             })`,
           },
@@ -92,6 +121,18 @@ function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
             type: "mrkdwn",
             text: `*Twitterフォロワー数:*\n${kpi.twitterFollowerCount}（+${
               kpi.twitterFollowerCount - previousWeekKpi.twitterFollowerCount
+            })`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*Zenn 記事数:*\n${kpi.zennPostCount}（+${
+              kpi.zennPostCount - previousWeekKpi.zennPostCount
+            })`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*Zenn LIKE数:*\n${kpi.zennLikeCount}（+${
+              kpi.zennLikeCount - previousWeekKpi.zennLikeCount
             })`,
           },
         ],
@@ -126,7 +167,7 @@ function createBlock(kpi: Kpi, previousWeekKpi: Kpi, recentPosts: Item[]) {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: recentPostsText,
+          text: recentQiitaPostsText + recentZennArticlesText || "なし",
         },
       },
       {

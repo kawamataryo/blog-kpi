@@ -2,6 +2,7 @@ import { QiitaClient } from "./lib/qiitaClient";
 import { HatenaClient } from "./lib/hatenaClient";
 import { GoogleAnalyticsClient } from "./lib/googleAnalyticsClient";
 import { TwitterClient } from "./lib/twitterClient";
+import {ZennClient} from "./lib/ZennClient";
 
 const BLOG_URL = PropertiesService.getScriptProperties().getProperty(
   "blogUrl"
@@ -17,6 +18,9 @@ const TWITTER_ID = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 const GA_ID = PropertiesService.getScriptProperties().getProperty(
   "gaId"
+) as string;
+const ZENN_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "zennUserName"
 ) as string;
 
 // 目標値
@@ -40,6 +44,7 @@ function recordKpi() {
   const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
   const gaKpi = new GoogleAnalyticsClient(GA_ID).fetchKpi();
   const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
+  const zennKpi = new ZennClient(ZENN_USER_NAME).fetchKpi();
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const insertLow = sheet.getLastRow() + 1;
@@ -60,6 +65,8 @@ function recordKpi() {
     TARGET_VALUES.twitterFollowersCount,
     TARGET_VALUES.hatenaBookmarkCount,
     TARGET_VALUES.dailyPageView,
+    zennKpi.zennPostCount,
+    zennKpi.zennLikeCount,
   ].forEach((data, i) => {
     sheet.getRange(insertLow, i + 1).setValue(data);
   });
