@@ -25,10 +25,10 @@ export interface ZennArticle {
   body_updated_at?: string;
   source_repo_updated_at: string;
   created_at: string;
-  topics: Topic[];
+  topics: ZennTopic[];
   user?: null;
 }
 
 export interface ZennMyArticlesResponse {
-  articles: Article[];
+  articles: ZennArticle[];
 }
