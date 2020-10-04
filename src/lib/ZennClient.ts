@@ -34,7 +34,7 @@ export class ZennClient {
 
   private fetchMyAllArticles(): ZennArticle[] {
     const response = UrlFetchApp.fetch(
-      `${this.BASE_URL}/${this.userName}/ryo_kawamata/articles`,
+      `${this.BASE_URL}/users/${this.userName}/articles`,
       this.FETCH_OPTION
     );
     return JSON.parse(response.getContentText()) as ZennArticle[];
