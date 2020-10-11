@@ -34,7 +34,7 @@ export class ZennClient {
 
   private fetchMyAllArticles(): ZennArticle[] {
     const response = UrlFetchApp.fetch(
-      `https://api.zenn.dev/users/ryo_kawamata/articles`,
+      `https://api.zenn.dev/users/${this.userName}/articles`,
       this.FETCH_OPTION
     );
     return JSON.parse(response.getContentText()).articles as ZennArticle[];
@@ -49,14 +49,4 @@ export class ZennClient {
       return (likeCount += article.liked_count);
     }, 0);
   }
-}
-
-function test() {
-  const response = UrlFetchApp.fetch(
-    `https://api.zenn.dev/users/ryo_kawamata/articles`,
-    {
-      method: "get",
-    }
-  );
-  console.log(JSON.parse(response.getContentText()).articles as ZennArticle[]);
 }
