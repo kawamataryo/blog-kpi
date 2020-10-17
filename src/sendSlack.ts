@@ -1,7 +1,7 @@
 import { Kpi } from "./types/types";
 import { Item } from "./types/qiita-types";
 import { QiitaClient } from "./lib/qiitaClient";
-import { ZennClient } from "./lib/ZennClient";
+import { ZennClient } from "./lib/zennClient";
 import { ZennArticle } from "./types/zenn-types";
 const WEBHOOK_URL = PropertiesService.getScriptProperties().getProperty(
   "webhookUrl"

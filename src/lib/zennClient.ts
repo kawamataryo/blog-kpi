@@ -14,7 +14,6 @@ export class ZennClient {
 
   constructor(private userName: string) {
     this.allArticle = this.fetchMyAllArticles();
-    console.log(this.allArticle);
   }
 
   fetchKpi(): ZennKpi {

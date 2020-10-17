@@ -26,7 +26,6 @@ export class GoogleAnalyticsClient {
       "today",
       "ga:sessions, ga:users"
     ).rows;
-    console.log(dataRows);
 
     return {
       sessions: Number(dataRows![0][0]),
@@ -41,7 +40,6 @@ export class GoogleAnalyticsClient {
       "today",
       "ga:sessions, ga:users"
     ).rows;
-    console.log(dataRows);
 
     return {
       sessions: Number(dataRows![0][0]),
