@@ -70,7 +70,7 @@ function createBlock(
     .join("\n\n");
   const recentZennArticlesText = recentZennArticles
     .map((article) => {
-      return `${article.title} (*${article.liked_count}* LIKE)\nhttps://zenn.dev/articles/${ZENN_USER_NAME}/${article.slug}`;
+      return `${article.title} (*${article.liked_count}* LIKE)\nhttps://zenn.dev/${ZENN_USER_NAME}/articles/${article.slug}`;
     })
     .join("\n\n");
 
