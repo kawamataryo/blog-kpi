@@ -41,7 +41,8 @@ function recordKpi() {
     QIITA_ACCESS_TOKEN,
     QIITA_USER_NAME
   ).fetchKpi();
-  const hatenaKpi = new HatenaClient(BLOG_URL).fetchKpi();
+  const hatenaKpiAboutQiita = new HatenaClient(BLOG_URL).fetchKpi();
+  const hatenaKpiAboutZenn = new HatenaClient(`https://zenn.dev/${ZENN_USER_NAME}`).fetchKpi();
   const gaKpi = new GoogleAnalyticsClient(GA_ID).fetchKpi();
   const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
   const zennKpi = new ZennClient(ZENN_USER_NAME).fetchKpi();
@@ -54,7 +55,7 @@ function recordKpi() {
     qiitaKpi.lgtmCount,
     qiitaKpi.stockCount,
     qiitaKpi.followersCount,
-    hatenaKpi.bookmarkCount,
+    hatenaKpiAboutQiita.bookmarkCount + hatenaKpiAboutZenn.bookmarkCount,
     twitterKpi.followersCount,
     gaKpi.dailyPageView,
     gaKpi.dailyUsers,
