@@ -1,7 +1,14 @@
+type Metrics = { sessions: number; users: number };
+type GoogleAnalyticsKpi = {
+  dailyPageView: number;
+  dailyUsers: number;
+  weeklyPageView: number;
+  weeklyUsers: number;
+};
+
 export class GoogleAnalyticsClient {
   constructor(private gaId: string) {}
-
-  fetchKpi() {
+  fetchKpi(): GoogleAnalyticsKpi {
     const {
       sessions: dailyPageView,
       users: dailyUsers,
@@ -19,7 +26,7 @@ export class GoogleAnalyticsClient {
     };
   }
 
-  fetchDailyMetrics() {
+  fetchDailyMetrics(): Metrics {
     const dataRows = Analytics!.Data!.Ga!.get(
       this.gaId,
       "today",
@@ -33,7 +40,7 @@ export class GoogleAnalyticsClient {
     };
   }
 
-  fetchWeeklyMetrics() {
+  fetchWeeklyMetrics(): Metrics {
     const dataRows = Analytics!.Data!.Ga!.get(
       this.gaId,
       "7daysAgo",

@@ -1,5 +1,13 @@
 import { TwitterKpi } from "../types/types";
 
+declare const OAuth1: {
+  createService(arg?: any): any;
+};
+
+type TwitterUser = {
+  followers_count: number;
+};
+
 export class TwitterClient {
   private readonly BASE_URL = "https://api.twitter.com/1.1";
   private twitterService: any;
@@ -15,7 +23,7 @@ export class TwitterClient {
     };
   }
 
-  fetchUser(twitterId: string) {
+  fetchUser(twitterId: string): TwitterUser {
     const userRes = this.twitterService.fetch(
       `${this.BASE_URL}/users/show.json?user_id=${twitterId}`,
       {
@@ -24,9 +32,7 @@ export class TwitterClient {
       }
     );
 
-    return JSON.parse(userRes.getContentText()) as {
-      followers_count: number;
-    };
+    return JSON.parse(userRes.getContentText()) as TwitterUser;
   }
 }
 
@@ -44,6 +50,7 @@ const CONSUMER_SECRET = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 
 // 認証URLを取得しログに出力する
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function logAuthorizeUri() {
   const twitterService = getTwitterService();
   Logger.log(twitterService.authorize());
@@ -66,7 +73,8 @@ function getTwitterService() {
 }
 
 // リダイレクト時に実行されるコールバック関数
-function authCallback(request) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function authCallback(request: any) {
   const twitterService = getTwitterService();
   // ここで認証成功時にアクセストークンがPropertyStoreに保存される
   const isAuthorized = twitterService.handleCallback(request);
