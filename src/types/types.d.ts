@@ -16,7 +16,8 @@ export type TwitterKpi = {
 export type ZennKpi = {
   zennLikeCount: number;
   zennPostCount: number;
-}
+  zennFollowerCount: number;
+};
 
 export type Kpi = {
   date: string;
@@ -32,4 +33,5 @@ export type Kpi = {
   weeklyUsers: number;
   zennPostCount: number;
   zennLikeCount: number;
+  zennFollowerCount: number;
 };

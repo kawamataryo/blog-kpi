@@ -1,5 +1,5 @@
 import { ZennKpi } from "../types/types";
-import { ZennArticle } from "../types/zenn-types";
+import { ZennArticle, Follower } from "../types/zenn-types";
 
 declare const Moment: {
   moment(arg?: any): any;
@@ -11,15 +11,18 @@ export class ZennClient {
     method: "get" as const,
   };
   private allArticle: ZennArticle[] = [];
+  private followers: Follower[] = [];
 
   constructor(private userName: string) {
     this.allArticle = this.fetchMyAllArticles();
+    this.followers = this.fetchMyFollowers();
   }
 
   fetchKpi(): ZennKpi {
     return {
       zennPostCount: this.postCount(),
       zennLikeCount: this.likeCount(),
+      zennFollowerCount: this.followerCount(),
     };
   }
 
@@ -39,6 +42,14 @@ export class ZennClient {
     return JSON.parse(response.getContentText()).articles as ZennArticle[];
   }
 
+  private fetchMyFollowers(): Follower[] {
+    const response = UrlFetchApp.fetch(
+      `https://api.zenn.dev/users/${this.userName}/followers`,
+      this.FETCH_OPTION
+    );
+    return JSON.parse(response.getContentText()).users as Follower[];
+  }
+
   private postCount(): number {
     return this.allArticle.length;
   }
@@ -47,5 +58,9 @@ export class ZennClient {
     return this.allArticle.reduce<number>((likeCount, article) => {
       return (likeCount += article.liked_count);
     }, 0);
+  }
+
+  private followerCount(): number {
+    return this.followers.length;
   }
 }

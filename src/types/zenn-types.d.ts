@@ -32,3 +32,15 @@ export interface ZennArticle {
 export interface ZennMyArticlesResponse {
   articles: ZennArticle[];
 }
+
+export interface Follower {
+  id: number;
+  username: string;
+  name: string;
+  avatar_url: string;
+}
+
+export interface ZennMyFollowersResponse {
+  users: User[];
+  next_page?: any;
+}

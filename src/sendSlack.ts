@@ -35,6 +35,7 @@ const KPI_KEYS = [
   "targetValueDailyPageView",
   "zennPostCount",
   "zennLikeCount",
+  "zennFollowerCount",
 ];
 
 function postMessage() {
@@ -133,6 +134,12 @@ function createBlock(
             type: "mrkdwn",
             text: `*Zenn LIKE数:*\n${kpi.zennLikeCount}（+${
               kpi.zennLikeCount - previousWeekKpi.zennLikeCount
+            })`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*Zenn フォロワー数:*\n${kpi.zennFollowerCount}（+${
+              kpi.zennFollowerCount - previousWeekKpi.zennFollowerCount
             })`,
           },
         ],

@@ -68,6 +68,7 @@ function recordKpi() {
     TARGET_VALUES.dailyPageView,
     zennKpi.zennPostCount,
     zennKpi.zennLikeCount,
+    zennKpi.zennFollowerCount,
   ].forEach((data, i) => {
     sheet.getRange(insertLow, i + 1).setValue(data);
   });
