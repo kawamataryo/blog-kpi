@@ -27,6 +27,7 @@ export interface ZennArticle {
   created_at: string;
   topics: ZennTopic[];
   user?: null;
+  url: string;
 }
 
 export interface ZennMyArticlesResponse {

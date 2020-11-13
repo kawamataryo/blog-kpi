@@ -6,7 +6,8 @@ declare const Moment: {
 };
 
 export class ZennClient {
-  private readonly BASE_URL = "https://api.zenn.dev";
+  private readonly BASE_URL = "https://zenn.dev";
+  private readonly BASE_API_URL = "https://api.zenn.dev";
   private readonly FETCH_OPTION = {
     method: "get" as const,
   };
@@ -36,15 +37,23 @@ export class ZennClient {
 
   private fetchMyAllArticles(): ZennArticle[] {
     const response = UrlFetchApp.fetch(
-      `https://api.zenn.dev/users/${this.userName}/articles`,
+      `${this.BASE_API_URL}/users/${this.userName}/articles`,
       this.FETCH_OPTION
     );
-    return JSON.parse(response.getContentText()).articles as ZennArticle[];
+    return JSON.parse(response.getContentText()).articles.map(
+      (article: any) => {
+        // レスポンスに記事のurlがないので、ここで組み立てる
+        return {
+          ...article,
+          url: `${this.BASE_URL}/${this.userName}/articles/${article.slug}`,
+        };
+      }
+    ) as ZennArticle[];
   }
 
   private fetchMyFollowers(): Follower[] {
     const response = UrlFetchApp.fetch(
-      `https://api.zenn.dev/users/${this.userName}/followers`,
+      `${this.BASE_API_URL}/users/${this.userName}/followers`,
       this.FETCH_OPTION
     );
     return JSON.parse(response.getContentText()).users as Follower[];
