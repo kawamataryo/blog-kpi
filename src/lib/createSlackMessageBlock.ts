@@ -1,13 +1,15 @@
 import { Kpi } from "../types/types";
-import { Item } from "../types/qiita-types";
-import { ZennArticle } from "../types/zenn-types";
+import { Item } from "../types/qiitaTypes";
+import { ZennArticle } from "../types/zennTypes";
+import { NoteContent } from "../types/noteTypes";
 
-export const createSlackMessageBlock = (
+export function createSlackMessageBlock(
   kpi: Kpi,
   previousWeekKpi: Kpi,
   recentQiitaPosts: Item[],
-  recentZennArticles: ZennArticle[]
-) => {
+  recentZennArticles: ZennArticle[],
+  recentNoteContents: NoteContent[]
+) {
   const recentQiitaPostsText = recentQiitaPosts
     .map((item) => {
       return `${item.title} (*${item.likes_count}* LGTM)\n${item.url}`;
@@ -16,6 +18,11 @@ export const createSlackMessageBlock = (
   const recentZennArticlesText = recentZennArticles
     .map((article) => {
       return `${article.title} (*${article.liked_count}* LIKE)\n${article.url}`;
+    })
+    .join("\n\n");
+  const recentNoteContentsText = recentNoteContents
+    .map((content) => {
+      return `${content.name} (*${content.likeCount}* LIKE)\n${content.url}`;
     })
     .join("\n\n");
 
@@ -56,18 +63,20 @@ export const createSlackMessageBlock = (
               kpi.qiitaFollowerCount - previousWeekKpi.qiitaFollowerCount
             })`,
           },
-          {
-            type: "mrkdwn",
-            text: `*はてなブックマーク数:*\n${kpi.hatenaBookmarkCount}（+${
-              kpi.hatenaBookmarkCount - previousWeekKpi.hatenaBookmarkCount
-            })`,
-          },
-          {
-            type: "mrkdwn",
-            text: `*Twitterフォロワー数:*\n${kpi.twitterFollowerCount}（+${
-              kpi.twitterFollowerCount - previousWeekKpi.twitterFollowerCount
-            })`,
-          },
+        ],
+        accessory: {
+          type: "image",
+          image_url:
+            "https://drive.google.com/uc?id=1bWoYzU4Jy0h3K_vpm84UcYPBGrxEVdgQ",
+          alt_text: "qiita thumbnail",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        fields: [
           {
             type: "mrkdwn",
             text: `*Zenn 記事数:*\n${kpi.zennPostCount}（+${
@@ -89,8 +98,81 @@ export const createSlackMessageBlock = (
         ],
         accessory: {
           type: "image",
-          image_url: "https://image.flaticon.com/icons/png/512/138/138351.png",
-          alt_text: "user thumbnail",
+          image_url:
+            "https://drive.google.com/uc?id=11WFXbNo0pB5-HnlqFDsfg7c01xCoPTMo",
+          alt_text: "zenn thumbnail",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        fields: [
+          {
+            type: "mrkdwn",
+            text: `*note 記事数:*\n${kpi.noteContentCount}（+${
+              kpi.noteContentCount - previousWeekKpi.noteContentCount
+            })`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*note Like数:*\n${kpi.noteLikeCount}（+${
+              kpi.noteLikeCount - previousWeekKpi.noteLikeCount
+            })`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*note フォロワー数:*\n${kpi.noteFollowerCount}（+${
+              kpi.noteFollowerCount - previousWeekKpi.noteFollowerCount
+            })`,
+          },
+        ],
+        accessory: {
+          type: "image",
+          image_url:
+            "https://drive.google.com/uc?id=1_R0p9YWUo3UsyjbyhzN6knKYYBnnJqJ1",
+          alt_text: "note thumbnail",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        fields: [
+          {
+            type: "mrkdwn",
+            text: `*はてなブックマーク数:*\n${kpi.hatenaBookmarkCount}（+${
+              kpi.hatenaBookmarkCount - previousWeekKpi.hatenaBookmarkCount
+            })`,
+          },
+        ],
+        accessory: {
+          type: "image",
+          image_url:
+            "https://drive.google.com/uc?id=11EJ8BWkzvN89fB03FIUz_YBF2vM_Thgd",
+          alt_text: "hatena thumbnail",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        fields: [
+          {
+            type: "mrkdwn",
+            text: `*Twitterフォロワー数:*\n${kpi.twitterFollowerCount}（+${
+              kpi.twitterFollowerCount - previousWeekKpi.twitterFollowerCount
+            })`,
+          },
+        ],
+        accessory: {
+          type: "image",
+          image_url:
+            "https://drive.google.com/uc?id=1R5__uM39n1cCOnIODr20WkK66x2UszYb",
+          alt_text: "twitter thumbnail",
         },
       },
       {
@@ -110,7 +192,10 @@ export const createSlackMessageBlock = (
         type: "section",
         text: {
           type: "mrkdwn",
-          text: recentQiitaPostsText + recentZennArticlesText || "なし",
+          text:
+            recentQiitaPostsText +
+              recentZennArticlesText +
+              recentNoteContentsText || "なし",
         },
       },
       {
@@ -118,4 +203,4 @@ export const createSlackMessageBlock = (
       },
     ],
   };
-};
+}

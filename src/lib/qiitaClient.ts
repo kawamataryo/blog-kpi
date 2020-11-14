@@ -1,5 +1,5 @@
 import { QiitaKpi } from "../types/types";
-import { Item, User } from "../types/qiita-types";
+import { Item, User } from "../types/qiitaTypes";
 
 declare const Moment: {
   moment(arg?: any): any;

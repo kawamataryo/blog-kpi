@@ -3,6 +3,7 @@ import { HatenaClient } from "./lib/hatenaClient";
 import { GoogleAnalyticsClient } from "./lib/googleAnalyticsClient";
 import { TwitterClient } from "./lib/twitterClient";
 import { ZennClient } from "./lib/zennClient";
+import { NoteClient } from "./lib/noteClient";
 
 const BLOG_URL = PropertiesService.getScriptProperties().getProperty(
   "blogUrl"
@@ -21,6 +22,9 @@ const GA_ID = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 const ZENN_USER_NAME = PropertiesService.getScriptProperties().getProperty(
   "zennUserName"
+) as string;
+const NOTE_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "noteUserName"
 ) as string;
 
 // 目標値
@@ -42,10 +46,13 @@ function recordKpi() {
     QIITA_USER_NAME
   ).fetchKpi();
   const hatenaKpiAboutQiita = new HatenaClient(BLOG_URL).fetchKpi();
-  const hatenaKpiAboutZenn = new HatenaClient(`https://zenn.dev/${ZENN_USER_NAME}`).fetchKpi();
+  const hatenaKpiAboutZenn = new HatenaClient(
+    `https://zenn.dev/${ZENN_USER_NAME}`
+  ).fetchKpi();
   const gaKpi = new GoogleAnalyticsClient(GA_ID).fetchKpi();
   const twitterKpi = new TwitterClient(TWITTER_ID).fetchKpi();
   const zennKpi = new ZennClient(ZENN_USER_NAME).fetchKpi();
+  const noteKpi = new NoteClient(NOTE_USER_NAME).fetchKpi();
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const insertLow = sheet.getLastRow() + 1;
@@ -69,6 +76,9 @@ function recordKpi() {
     zennKpi.zennPostCount,
     zennKpi.zennLikeCount,
     zennKpi.zennFollowerCount,
+    noteKpi.noteContentCount,
+    noteKpi.noteLikeCount,
+    noteKpi.noteFollowerCount,
   ].forEach((data, i) => {
     sheet.getRange(insertLow, i + 1).setValue(data);
   });

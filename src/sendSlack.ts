@@ -2,6 +2,7 @@ import { Kpi } from "./types/types";
 import { QiitaClient } from "./lib/qiitaClient";
 import { ZennClient } from "./lib/zennClient";
 import { createSlackMessageBlock } from "./lib/createSlackMessageBlock";
+import { NoteClient } from "./lib/noteClient";
 
 const WEBHOOK_URL = PropertiesService.getScriptProperties().getProperty(
   "webhookUrl"
@@ -14,6 +15,9 @@ const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
 ) as string;
 const ZENN_USER_NAME = PropertiesService.getScriptProperties().getProperty(
   "zennUserName"
+) as string;
+const NOTE_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "noteUserName"
 ) as string;
 
 const KPI_KEYS = [
@@ -36,6 +40,9 @@ const KPI_KEYS = [
   "zennPostCount",
   "zennLikeCount",
   "zennFollowerCount",
+  "noteContentCount",
+  "noteLikeCount",
+  "noteFollowerCount",
 ];
 
 function postMessage() {
@@ -47,6 +54,9 @@ function postMessage() {
     QIITA_USER_NAME
   ).fetchWeeklyPosts();
   const recentZennArticles = new ZennClient(ZENN_USER_NAME).fetchWeeklyPosts();
+  const recentNoteContents = new NoteClient(
+    NOTE_USER_NAME
+  ).fetchWeeklyContents();
 
   const options = {
     method: "post" as const,
@@ -56,7 +66,8 @@ function postMessage() {
         kpi,
         previousWeekKpi,
         recentQiitaPosts,
-        recentZennArticles
+        recentZennArticles,
+        recentNoteContents
       )
     ),
   };
@@ -72,7 +83,7 @@ function getKpi(
     if (key === "date") {
       result[key] = cellValue;
     } else {
-      result[key] = Number(cellValue);
+      result[key] = Number(cellValue || 0);
     }
     return result;
   }, {}) as Kpi;

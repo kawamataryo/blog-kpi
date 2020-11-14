@@ -1,5 +1,5 @@
 import { ZennKpi } from "../types/types";
-import { ZennArticle, Follower } from "../types/zenn-types";
+import { ZennArticle, Follower } from "../types/zennTypes";
 
 declare const Moment: {
   moment(arg?: any): any;

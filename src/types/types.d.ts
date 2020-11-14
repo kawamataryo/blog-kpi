@@ -19,6 +19,12 @@ export type ZennKpi = {
   zennFollowerCount: number;
 };
 
+export type NoteKpi = {
+  noteContentCount: number;
+  noteFollowerCount: number;
+  noteLikeCount: number;
+}
+
 export type Kpi = {
   date: string;
   qiitaPostCount: number;
@@ -34,4 +40,7 @@ export type Kpi = {
   zennPostCount: number;
   zennLikeCount: number;
   zennFollowerCount: number;
+  noteContentCount: number;
+  noteFollowerCount: number;
+  noteLikeCount: number;
 };
