@@ -3,6 +3,19 @@ import { Item } from "../types/qiitaTypes";
 import { ZennArticle } from "../types/zennTypes";
 import { NoteContent } from "../types/noteTypes";
 
+const QIITA_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "qiitaUserName"
+) as string;
+const ZENN_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "zennUserName"
+) as string;
+const NOTE_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "noteUserName"
+) as string;
+const TWITTER_USER_NAME = PropertiesService.getScriptProperties().getProperty(
+  "twitterUserName"
+) as string;
+
 export function createSlackMessageBlock(
   kpi: Kpi,
   previousWeekKpi: Kpi,
@@ -44,6 +57,13 @@ export function createSlackMessageBlock(
       },
       {
         type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `https://qiita.com/${QIITA_USER_NAME}`,
+        },
+      },
+      {
+        type: "section",
         fields: [
           {
             type: "mrkdwn",
@@ -63,6 +83,12 @@ export function createSlackMessageBlock(
               kpi.qiitaFollowerCount - previousWeekKpi.qiitaFollowerCount
             })`,
           },
+          {
+            type: "mrkdwn",
+            text: `*はてなブックマーク数:*\n${kpi.hatenaBookmarkCount}（+${
+              kpi.hatenaBookmarkCount - previousWeekKpi.hatenaBookmarkCount
+            })`,
+          },
         ],
         accessory: {
           type: "image",
@@ -73,6 +99,13 @@ export function createSlackMessageBlock(
       },
       {
         type: "divider",
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `https://zenn.dev/${ZENN_USER_NAME}`,
+        },
       },
       {
         type: "section",
@@ -108,6 +141,13 @@ export function createSlackMessageBlock(
       },
       {
         type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `https://note.com/${NOTE_USER_NAME}`,
+        },
+      },
+      {
+        type: "section",
         fields: [
           {
             type: "mrkdwn",
@@ -140,23 +180,10 @@ export function createSlackMessageBlock(
       },
       {
         type: "section",
-        fields: [
-          {
-            type: "mrkdwn",
-            text: `*はてなブックマーク数:*\n${kpi.hatenaBookmarkCount}（+${
-              kpi.hatenaBookmarkCount - previousWeekKpi.hatenaBookmarkCount
-            })`,
-          },
-        ],
-        accessory: {
-          type: "image",
-          image_url:
-            "https://drive.google.com/uc?id=11EJ8BWkzvN89fB03FIUz_YBF2vM_Thgd",
-          alt_text: "hatena thumbnail",
+        text: {
+          type: "mrkdwn",
+          text: `https://mobile.twitter.com/${TWITTER_USER_NAME}`,
         },
-      },
-      {
-        type: "divider",
       },
       {
         type: "section",
