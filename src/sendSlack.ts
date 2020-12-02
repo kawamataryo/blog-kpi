@@ -5,7 +5,7 @@ import { createSlackMessageBlock } from "./lib/createSlackMessageBlock";
 import { NoteClient } from "./lib/noteClient";
 
 const WEBHOOK_URL = PropertiesService.getScriptProperties().getProperty(
-  "webhookUrl"
+  "webhookUrl2"
 ) as string;
 const QIITA_ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(
   "qiitaAccessToken"
